@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SubmitExample(),
+    );
+  }
+}
+
+class SubmitExample extends StatelessWidget {
+  const SubmitExample({super.key});
+
+  void showInitialSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+          const SnackBar(
+            content: Text("Preparing submission..."),
+            duration: Duration(seconds: 2),
+          ),
+        )
+        .closed
+        .then((_) {
+      showSubmitDialog(context);
+    });
+  }
+
+  void showSubmitDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Submit Form"),
+        content: const Text("Do you want to submit the form?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Submission Cancelled")),
+              );
+            },
+            child: const Text("No"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Form Submitted Successfully")),
+              );
+            },
+            child: const Text("Yes"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Submit Example")),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => showInitialSnackBar(context),
+          child: const Text("Submit"),
+        ),
+      ),
+    );
+  }
+}
