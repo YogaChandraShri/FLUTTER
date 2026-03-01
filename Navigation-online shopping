@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ProductPage(),
+    );
+  }
+}
+
+class ProductPage extends StatefulWidget {
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+
+  List<String> products = [
+    "Laptop",
+    "Mobile",
+    "Headphones",
+    "Keyboard"
+  ];
+
+  List<String> cartItems = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Products"),
+      ),
+      body: Column(
+        children: [
+
+          // Product List
+          Expanded(
+            child: ListView.builder(
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(products[index]),
+                  trailing: ElevatedButton(
+                    child: Text("Add to Cart"),
+                    onPressed: () {
+                      setState(() {
+                        cartItems.add(products[index]);
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("${products[index]} added to cart"),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+
+          // Go to Cart Button
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50),
+              ),
+              child: Text("Go to Cart"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        CartPage(cartItems: cartItems),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CartPage extends StatelessWidget {
+  final List<String> cartItems;
+
+  CartPage({required this.cartItems});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Cart")),
+      body: cartItems.isEmpty
+          ? Center(child: Text("Cart is Empty"))
+          : ListView.builder(
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(cartItems[index]),
+                );
+              },
+            ),
+    );
+  }
+}
